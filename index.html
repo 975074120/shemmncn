@@ -82,8 +82,8 @@
       div.className = 'sh';
       let url = location.origin + "/sh/" + sh;
       let tcpx_a = '<a href="' + url + '" onclick="aclick(event)" title="点击复制">' + sh + '</a>';
-      let curl_a = '<a href="' + url + '" onclick="aclick(event)" title="curl -fsSL">curl</a>';
-      let wget_a = '<a href="' + url + '" onclick="aclick(event)" title="wget">wget</a>';
+      let curl_a = '<a href="' + url + '" onclick="aclick(event)" title="curl -fsSL -o ">curl</a>';
+      let wget_a = '<a href="' + url + '" onclick="aclick(event)" title="wget -O ">wget</a>';
       div.innerHTML = tcpx_a + curl_a + wget_a;
       options.append(div);
     }
@@ -93,7 +93,7 @@
       let a = e.currentTarget;
       let url = '"' + a.href + '"'; a.href;
       let fileName = getFileName(a.href);
-      url = a.title + ' -O ' + fileName + ' ' + url + ' && chmod +x ' + fileName + ' && ./' + fileName;
+      url = a.title + fileName + ' ' + url + ' && chmod +x ' + fileName + ' && ./' + fileName;
       if (a.title == '点击复制') {
         url = a.href;
       }
