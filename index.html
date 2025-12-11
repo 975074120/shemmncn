@@ -1,0 +1,135 @@
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LoryShell</title>
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link href="assets/css/style.css" rel="stylesheet" />
+  <style>
+    .sh>a {
+      color: #ffffff;
+      text-decoration: underline;
+      margin: 0px 8px;
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 150%;
+    }
+
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+    }
+
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+
+      to {
+        bottom: 30px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeout {
+      from {
+        bottom: 30px;
+        opacity: 1;
+      }
+
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h3>Shell Example Project</h3>
+      <h1>LoryShell</h1>
+      <section class="options" id="options">
+      </section>
+    </div>
+  </div>
+  <div id="toast"></div>
+  <script>
+    let options = document.getElementById('options');
+    let shs = ['tcpx.sh'];
+    for (const sh of shs) {
+      let div = document.createElement('div');
+      div.className = 'sh';
+      let url = location.origin + "/sh/" + sh;
+      let tcpx_a = '<a href="' + url + '" onclick="aclick(event)" title="点击复制">' + sh + '</a>';
+      let curl_a = '<a href="' + url + '" onclick="aclick(event)" title="curl -fsSL">curl</a>';
+      let wget_a = '<a href="' + url + '" onclick="aclick(event)" title="wget -qL">wget</a>';
+      div.innerHTML = tcpx_a + curl_a + wget_a;
+      options.append(div);
+    }
+
+    function aclick(e) {
+      e.preventDefault();
+      let a = e.currentTarget;
+      let url = '"' + a.href + '"'; a.href;
+      let fileName = getFileName(a.href);
+      url = a.title + ' -o ' + fileName + ' ' + url + ' && chmod +x ' + fileName + ' && ./' + fileName;
+      if (a.title == '点击复制') {
+        url = a.href;
+      }
+      copyToClipboard(url);
+    }
+
+    function getFileName(url) {
+      if (!url || typeof url !== 'string') {
+        return '';
+      }
+      const cleanUrl = url.split(/[?#]/)[0];
+      const pathParts = cleanUrl.split('/');
+      const fileName = pathParts.pop() || '';
+      return fileName.trim();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "show";
+      setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+      }, 2000); // 3秒后隐藏
+    }
+    function copyToClipboard(text) {
+      var dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = text;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      showToast('复制成功');
+    }
+
+  </script>
+
+</body>
+
+</html>
